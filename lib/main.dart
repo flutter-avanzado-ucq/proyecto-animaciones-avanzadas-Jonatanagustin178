@@ -1,4 +1,3 @@
-// main.dart
 import 'package:flutter/material.dart';
 import 'screens/tarea_screen.dart';
 import 'tema/tema_app.dart';
@@ -15,7 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tareas Pro',
-      theme: AppTheme.theme,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       home: const TaskScreen(),
     );
   }

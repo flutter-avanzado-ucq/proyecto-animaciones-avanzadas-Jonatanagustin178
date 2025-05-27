@@ -22,6 +22,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
@@ -32,17 +33,23 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Agregar nueva tarea', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            'Agregar nueva tarea',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           TextField(
             controller: _controller,
             autofocus: true,
-            decoration: const InputDecoration(
+            style: TextStyle(color: theme.textTheme.bodyMedium?.color),
+            decoration: InputDecoration(
               labelText: 'Descripción',
-              border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: theme.textTheme.bodyMedium?.color),
+              border: const OutlineInputBorder(),
             ),
             onSubmitted: (_) => _submit(),
           ),
+
           const SizedBox(height: 12),
           ElevatedButton.icon(
             onPressed: _submit,

@@ -15,6 +15,7 @@ class _TaskScreenState extends State<TaskScreen>
     with SingleTickerProviderStateMixin {
   final List<Map<String, dynamic>> _tasks = [];
   late AnimationController _iconController;
+  bool _isDarkMode = false;
 
   @override
   void initState() {
@@ -63,11 +64,29 @@ class _TaskScreenState extends State<TaskScreen>
 
   @override
   Widget build(BuildContext context) {
+    final pendingCount = _tasks.where((task) => task['done'] == false).length;
+
     return Scaffold(
+      backgroundColor: _isDarkMode ? Colors.black : Colors.white,
+      appBar: AppBar(
+        title: Text('Tareas Pro'),
+        backgroundColor:
+            _isDarkMode ? Colors.deepPurple[700] : Colors.deepPurple,
+        actions: [
+          IconButton(
+            icon: Icon(_isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () {
+              setState(() {
+                _isDarkMode = !_isDarkMode;
+              });
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            const Header(),
+            Header(pendingTasks: pendingCount, isDarkMode: _isDarkMode),
             Expanded(
               child: AnimationLimiter(
                 child: ListView.builder(
@@ -75,18 +94,29 @@ class _TaskScreenState extends State<TaskScreen>
                   itemCount: _tasks.length,
                   itemBuilder: (context, index) {
                     final task = _tasks[index];
-                    return AnimationConfiguration.staggeredList(
-                      position: index,
-                      duration: const Duration(milliseconds: 400),
-                      child: SlideAnimation(
-                        verticalOffset: 50.0,
-                        child: FadeInAnimation(
-                          child: TaskCard(
-                            title: task['title'],
-                            isDone: task['done'],
-                            onToggle: () => _toggleComplete(index),
-                            onDelete: () => _removeTask(index),
-                            iconRotation: _iconController,
+                    return Dismissible(
+                      key: Key(task['title'] + index.toString()),
+                      direction: DismissDirection.startToEnd,
+                      background: Container(
+                        color: Colors.redAccent,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(left: 20),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (_) => _removeTask(index),
+                      child: AnimationConfiguration.staggeredList(
+                        position: index,
+                        duration: const Duration(milliseconds: 400),
+                        child: SlideAnimation(
+                          verticalOffset: 50.0,
+                          child: FadeInAnimation(
+                            child: TaskCard(
+                              title: task['title'],
+                              isDone: task['done'],
+                              onToggle: () => _toggleComplete(index),
+                              onDelete: () => _removeTask(index),
+                              iconRotation: _iconController,
+                            ),
                           ),
                         ),
                       ),
@@ -101,12 +131,11 @@ class _TaskScreenState extends State<TaskScreen>
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddTaskSheet,
         backgroundColor: Colors.deepPurple,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         child: AnimatedIcon(
-          icon: AnimatedIcons.add_event,
+          icon: AnimatedIcons.event_add,
           progress: _iconController,
+          color: Colors.white,
         ),
       ),
     );

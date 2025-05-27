@@ -34,7 +34,7 @@ class TaskCard extends StatelessWidget {
               color: Colors.black.withOpacity(0.05),
               blurRadius: 8,
               offset: const Offset(0, 4),
-            )
+            ),
           ],
         ),
         child: ListTile(
@@ -43,11 +43,14 @@ class TaskCard extends StatelessWidget {
             child: AnimatedBuilder(
               animation: iconRotation,
               builder: (context, child) {
+                // El ángulo gira 180 grados (pi)
+                final angle = isDone ? iconRotation.value * pi : 0.0;
                 return Transform.rotate(
-                  angle: isDone ? iconRotation.value * pi : 0,
+                  angle: angle,
                   child: Icon(
                     isDone ? Icons.check_circle : Icons.radio_button_unchecked,
                     color: isDone ? Colors.green : Colors.grey,
+                    size: 28,
                   ),
                 );
               },
@@ -57,7 +60,8 @@ class TaskCard extends StatelessWidget {
             title,
             style: TextStyle(
               decoration: isDone ? TextDecoration.lineThrough : null,
-              color: isDone ? Colors.black54 : Colors.black87,
+              fontSize: 16,
+              color: isDone ? Colors.grey : Colors.black87,
             ),
           ),
           trailing: IconButton(
