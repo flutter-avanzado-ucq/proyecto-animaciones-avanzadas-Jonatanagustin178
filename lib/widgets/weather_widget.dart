@@ -14,7 +14,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   @override
   void initState() {
     super.initState();
-    // Cargar clima para Querétaro, México
+    // Cargar clima para Querétaro, México (coordenadas del centro de la ciudad)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<WeatherProvider>().loadWeather(20.5888, -100.3899);
     });
