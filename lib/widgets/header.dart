@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/holiday_provider.dart';
 
 class Header extends StatelessWidget {
   final int pendingTasks;
@@ -12,6 +14,11 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final holidayProvider = Provider.of<HolidayProvider>(context);
+    final today = DateTime.now();
+    final isHolidayToday = holidayProvider.isHoliday(today);
+    final todayHoliday = holidayProvider.getHoliday(today);
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
       width: double.infinity,
@@ -26,28 +33,53 @@ class Header extends StatelessWidget {
         ),
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
       ),
-      child: Row(
+      child: Column(
         children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundImage: NetworkImage(
-              'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg',
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              const Text(
-                'Hola, Jonatan 👋',
-                style: TextStyle(color: Colors.white, fontSize: 18),
+              CircleAvatar(
+                radius: 24,
+                backgroundImage: NetworkImage(
+                  'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg',
+                ),
               ),
-              Text(
-                'Tareas pendientes: $pendingTasks',
-                style: const TextStyle(color: Colors.white70, fontSize: 14),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Hola, Jonatan 👋',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  Text(
+                    'Tareas pendientes: $pendingTasks',
+                    style: const TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                ],
               ),
             ],
           ),
+          if (isHolidayToday && todayHoliday != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '🎉 Hoy es feriado: ${todayHoliday.localName}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
         ],
       ),
     );

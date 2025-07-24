@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
 import '../widgets/card_tarea.dart';
 import '../widgets/header.dart';
 import '../widgets/add_task_sheet.dart';
 import '../widgets/weather_widget.dart';
+import '../providers/holiday_provider.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -25,6 +27,14 @@ class _TaskScreenState extends State<TaskScreen>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+
+    // Cargar feriados de México para el año actual
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HolidayProvider>().loadHolidays(
+        year: DateTime.now().year,
+        countryCode: 'MX',
+      );
+    });
   }
 
   @override
@@ -33,9 +43,9 @@ class _TaskScreenState extends State<TaskScreen>
     super.dispose();
   }
 
-  void _addTask(String task) {
+  void _addTask(String task, DateTime date) {
     setState(() {
-      _tasks.insert(0, {'title': task, 'done': false});
+      _tasks.insert(0, {'title': task, 'done': false, 'date': date});
     });
   }
 
@@ -115,6 +125,7 @@ class _TaskScreenState extends State<TaskScreen>
                             child: TaskCard(
                               title: task['title'],
                               isDone: task['done'],
+                              date: task['date'],
                               onToggle: () => _toggleComplete(index),
                               onDelete: () => _removeTask(index),
                               iconRotation: _iconController,

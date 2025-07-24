@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'screens/tarea_screen.dart';
 import 'tema/tema_app.dart';
 import 'providers/weather_provider.dart';
+import 'providers/holiday_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,8 +14,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => WeatherProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => WeatherProvider()),
+        ChangeNotifierProvider(create: (context) => HolidayProvider()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Tareas Pro',
